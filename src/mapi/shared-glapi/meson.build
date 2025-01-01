@@ -57,11 +57,11 @@ libglapi = shared_library(
   link_args : [ld_args_gc_sections],
   include_directories : [inc_src, inc_include, inc_mapi],
   dependencies : [dep_thread, dep_selinux, idep_mesautil],
-  soversion : host_machine.system() == 'windows' ? '' : '0',
-  version : '0.0.0',
+  soversion : '',
   name_prefix : host_machine.system() == 'windows' ? 'lib' : [],  # always use lib, but avoid warnings on !windows
   install : true,
 )
+
 libglapi_build_dir = meson.current_build_dir()
 
 if with_any_opengl and with_tests

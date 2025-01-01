@@ -42,6 +42,7 @@ jobs:
             -Detnaviv=disabled \
             -Dfreedreno-kgsl=true
           ninja -C "build-android" install
+          export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/tmp/drm-static/lib/pkgconfig/
           cd ..
           envsubst <android-${{matrix.arch}} >build-crossfile
           meson setup "build-android" \
@@ -53,7 +54,7 @@ jobs:
             -Dandroid-libbacktrace=disabled \
             -Dandroid-strict=false \
             -Dxlib-lease=disabled \
-            -Degl=disabled \
+            -Degl=enabled \
             -Dgbm=disabled \
             -Dglx=disabled \
             -Dopengl=true \
@@ -61,7 +62,8 @@ jobs:
             -Dvulkan-drivers= \
             -Dgallium-drivers=freedreno,zink,panfrost,swrast \
             -Dfreedreno-kmds=kgsl \
-            -Dshared-glapi=false \
+            -Dshared-glapi=true \
+            -Dandroid-stub=true \
             -Dbuildtype=debug
           ninja -C "build-android" install
           envsubst <android-turnip-${{matrix.arch}} >build-crossfile-turnip
@@ -82,6 +84,7 @@ jobs:
           mv /tmp/mesa/lib/* /tmp/mesa/toupload/
           cd /tmp/mesa/toupload
           mv libOSMesa.so.8.0.0 libOSMesa.so
+          mv libEGL.so.1.0.0 libEGL.so          
       - name: Upload libraries
         uses: actions/upload-artifact@v3
         with:

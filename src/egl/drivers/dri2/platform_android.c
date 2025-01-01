@@ -1094,7 +1094,7 @@ droid_open_device(_EGLDisplay *disp, bool swrast)
 {
 #ifdef HAVE_FREEDRENO_KGSL
    if (droid_open_device_kgsl(disp, swrast))
-      goto done;
+	 return EGL_TRUE;
 #endif
 #define MAX_DRM_DEVICES 64
    struct dri2_egl_display *dri2_dpy = dri2_egl_display(disp);
@@ -1207,11 +1207,12 @@ dri2_initialize_android(_EGLDisplay *disp)
 
    /* Only add a egl device if this is not the kgsl driver */
    if (strcmp(dri2_dpy->driver_name, "kgsl") != 0) {
-      dev = _eglAddDevice(dri2_dpy->fd_render_gpu, false);
+      _EGLDevice *dev = _eglFindDevice(dri2_dpy->fd_render_gpu, false);
       if (!dev) {
          err = "DRI2: failed to find EGLDevice";
          goto cleanup;
       }
+	  disp->Device = dev;
    }
 
    if (!dri2_setup_device(disp, false)) {
